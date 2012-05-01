@@ -128,7 +128,9 @@ void Login(char* message, SOCKET* hClntSock){
 			strcpy(ServMessage, "VALIDACCOUNT");
 			send((*hClntSock), ServMessage, 100, 0);
 			memset(ServMessage, 0, sizeof(ServMessage));
-			MakeNewThread(&PlayerHead, (*hClntSock), id);
+			int result= Reconnect(id);
+			if(result== 1)
+				MakeNewThread(&PlayerHead, (*hClntSock), id);
 			break;
 		}
 		if(eof== NULL){
@@ -141,4 +143,16 @@ void Login(char* message, SOCKET* hClntSock){
 		memset(TempUserPassword, 0, sizeof(TempUserPassword));
 		memset(TempUserId, 0, sizeof(TempUserId));
 	}
+}
+
+int Reconnect(char* id){
+	Player* PlayerTail= PlayerHead;
+	while(PlayerTail!= NULL){
+		if(strcmp(PlayerTail->GetClntId(), id)== 0){
+			PlayerTail->Connect();
+			return 0;
+		}
+		PlayerTail= PlayerTail->GetNextNode();
+	}
+	return 1;
 }

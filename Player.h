@@ -7,6 +7,7 @@ private:
 	SOCKET hClnt;
 	char name[30];
 	Player* NextNode;
+	bool connected;
 
 public:
 	Player(SOCKET hClnt, char* name);
@@ -14,7 +15,9 @@ public:
 
 	Player* GetNextNode();
 	void SetNextNode(Player* NextNode);
-	void GetClntMessage(char* buffer);
+	int GetClntMessage(char* buffer);
 	char* GetClntId();
 	void SendClntMessage(char* message);
+	void DisConnect();
+	void Connect();
 };

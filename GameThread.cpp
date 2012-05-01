@@ -50,7 +50,7 @@ void* ThreadProc(void* PlayerHead2){
 		threadPlayer= temp;
 		printf("threadPlayer is %s\n", threadPlayer->GetClntId());
 
-		int MinResult= MinGyuProc(threadPlayer);
+		//int MinResult= MinGyuProc(threadPlayer);
 
 		char Tempmessage[100]="NEWP ";
 		strcat(Tempmessage, threadPlayer->GetClntId());
