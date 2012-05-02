@@ -7,4 +7,4 @@ void NewMember(char* message, SOCKET* hClntSock);
 
 void Login(char* message, SOCKET* hClntSock);
 
-int Reconnect(char* id);
+int Reconnect(char* id, SOCKET Socket);

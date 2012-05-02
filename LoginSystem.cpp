@@ -101,7 +101,7 @@ void Login(char* message, SOCKET* hClntSock){
 		char usingid[30];
 		memset(usingid, 0, sizeof(usingid));
 		memcpy(usingid, TempPlayer->GetClntId(), sizeof(usingid));
-		if(strcmp(usingid, id)== 0){
+		if(strcmp(usingid, id)== 0&& TempPlayer->GetConnect()== true){
 			printf("error Login again\n");
 			strcpy(ServMessage, "ANOTHERUSERISUSING");
 			send((*hClntSock), ServMessage, sizeof(ServMessage), 0);
@@ -128,7 +128,7 @@ void Login(char* message, SOCKET* hClntSock){
 			strcpy(ServMessage, "VALIDACCOUNT");
 			send((*hClntSock), ServMessage, 100, 0);
 			memset(ServMessage, 0, sizeof(ServMessage));
-			int result= Reconnect(id);
+			int result= Reconnect(id, *hClntSock);
 			if(result== 1)
 				MakeNewThread(&PlayerHead, (*hClntSock), id);
 			break;
@@ -145,11 +145,12 @@ void Login(char* message, SOCKET* hClntSock){
 	}
 }
 
-int Reconnect(char* id){
+int Reconnect(char* id, SOCKET Socket){
 	Player* PlayerTail= PlayerHead;
 	while(PlayerTail!= NULL){
 		if(strcmp(PlayerTail->GetClntId(), id)== 0){
 			PlayerTail->Connect();
+			PlayerTail->SetSocket(Socket);
 			return 0;
 		}
 		PlayerTail= PlayerTail->GetNextNode();

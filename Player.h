@@ -1,8 +1,6 @@
 #include "Windows.h"
-#include <time.h>
 
-class Player
-{
+class Player{
 private:
 	SOCKET hClnt;
 	char name[30];
@@ -20,4 +18,6 @@ public:
 	void SendClntMessage(char* message);
 	void DisConnect();
 	void Connect();
+	void SetSocket(SOCKET Socket);
+	bool GetConnect();
 };

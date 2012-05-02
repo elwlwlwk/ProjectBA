@@ -27,7 +27,8 @@ void Player::SetNextNode(Player* NextNode){
 }
 
 int Player::GetClntMessage(char* buffer){
-	while(connect== false); //connect는 false에서 true로 loginsystem에서 바꿔준다.
+	printf("%d", connected);
+	while(connected== false); //connect는 false에서 true로 loginsystem에서 바꿔준다.
 	int index= 0;
 	int result;
 	memset(buffer, 0, sizeof(buffer));
@@ -40,13 +41,17 @@ int Player::GetClntMessage(char* buffer){
 	printf("%s's result is %d",name, result);
 	if(result== -1|| result== 0){
 		this->connected= false;
+		close(hClnt);
 	}
 }
 
 void Player::SendClntMessage(char* message){
 	int len=0;
 	len= strlen(message);
-	send(hClnt, message, len+1, 0);
+	if(connected== true){
+		printf("Send Message to %s: %s\n", name, message);
+		send(hClnt, message, len+1, 0);
+	}
 }
 
 void Player::DisConnect(){
@@ -55,4 +60,12 @@ void Player::DisConnect(){
 
 void Player::Connect(){
 	connected= true;
+}
+
+void Player::SetSocket(SOCKET Socket){
+	hClnt= Socket;
+}
+
+bool Player::GetConnect(){
+	return connected;
 }

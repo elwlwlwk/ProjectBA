@@ -44,8 +44,6 @@ void PropagateProc(char* message, Player* threadPlayer){
 	while(PlayerTail!= NULL){
 		if(strcmp(PlayerTail->GetClntId(), threadPlayer->GetClntId())
 != 0)		{
-			printf("Send Message to %s: %s\n"
-, PlayerTail->GetClntId(), Tempmessage);
 			PlayerTail->SendClntMessage(Tempmessage);
 		}
 		PlayerTail= PlayerTail->GetNextNode();
@@ -66,8 +64,6 @@ void PropagateAllProc(char* message, Player* threadPlayer){
 	}
 	Player* TempPlayer= PlayerHead;
 	while(TempPlayer!= NULL){
-		printf("send message to %s: %s\n",TempPlayer->GetClntId(),
- Tempmessage);
 		TempPlayer->SendClntMessage(Tempmessage);
 		TempPlayer= TempPlayer->GetNextNode();
 	}

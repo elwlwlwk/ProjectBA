@@ -75,11 +75,13 @@ void* ThreadProc(void* PlayerHead2){
 		}
 
 		while(1){
-//			printf("Call GetClntMessage()\n");
-			threadPlayer->GetClntMessage(message);
-//			printf("incoming message: %s\n", message);
-			printf("Call DefMessageProc()\n");
-			DefMessageProc(message, threadPlayer);
+			printf("Call GetClntMessage()\n");
+			int result= threadPlayer->GetClntMessage(message);
+			printf("incoming message: %s\n", message);
+			if(result!= 0&& result!= -1){
+				printf("Call DefMessageProc()\n");
+				DefMessageProc(message, threadPlayer);
+			}
 			/*
 			for(int i= 0; i<30; i++){
 				if(message[i]== ' ')
