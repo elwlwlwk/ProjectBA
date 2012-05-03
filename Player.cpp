@@ -28,7 +28,9 @@ void Player::SetNextNode(Player* NextNode){
 
 int Player::GetClntMessage(char* buffer){
 	printf("%d", connected);
-	while(connected== false); //connect는 false에서 true로 loginsystem에서 바꿔준다.
+	while(connected== false){
+		sleep(1); //connect는 false에서 true로 loginsystem에서 바꿔준다.
+	}
 	int index= 0;
 	int result;
 	memset(buffer, 0, sizeof(buffer));
