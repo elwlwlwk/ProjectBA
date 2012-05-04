@@ -77,7 +77,7 @@ void SsendProc(char* message, Player* threadPlayer){
 
 	Player* PlayerTail= PlayerHead;
 	for(int i= 0, k=0, m= 0, n= 0; i<100&& message[i]!= 0; i++){
-		if(message[i]== ' '&& k<1){
+		if(message[i]== ' '&& k<2){
 			k++;
 			continue;
 		}
