@@ -7,6 +7,7 @@ Player::Player(SOCKET hClnt, char* name){
 	memcpy(this->name, name, 30);
 	NextNode= NULL;
 	connected= true;
+	PosX= PosY= 0;
 }
 
 
@@ -71,3 +72,32 @@ void Player::SetSocket(SOCKET Socket){
 bool Player::GetConnect(){
 	return connected;
 }
+
+
+int Player::PlayerMessageProc(char* message){
+	char recvmes[5][30];
+	memset(recvmes, 0, sizeof(recvmes);
+
+	for(int i= 0, int k= 0, int m= 0, int m= 0; message[i]!= 0|| i<100; i++){
+		if(message[i]== ' '){
+			m= 0;
+			k++;
+			continue;
+		}
+		recvmes[k][m++]= message[i];
+	}
+
+	if(strcmp(recvmes[1], "MOVE")== 0){
+		x= atoi(recvmes[3]);
+		y= atoi(recvmes[4]);
+	}
+	reutnr 0;
+}
+
+
+void Player::SetPos(int x, int y){
+	PosX= x;
+	PosY= y;
+}
+
+void Player::

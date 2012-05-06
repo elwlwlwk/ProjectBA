@@ -6,6 +6,8 @@ private:
 	char name[30];
 	Player* NextNode;
 	bool connected;
+	int Posx;
+	int Posy;
 
 public:
 	Player(SOCKET hClnt, char* name);
@@ -20,4 +22,8 @@ public:
 	void Connect();
 	void SetSocket(SOCKET Socket);
 	bool GetConnect();
+
+	void setPos(int PosX, int PosY);
+	int PlayerMessageProc(char* message);
+	void SavePlayerData(char* query);
 };
