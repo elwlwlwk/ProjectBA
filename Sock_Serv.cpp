@@ -8,6 +8,9 @@
 #include "LoginSystem.h"
 
 Player* PlayerHead;
+MYSQL mysql;
+
+int InitBrSql();
 
 int main(int argc, char** argv){
 	int serv_sock;
@@ -33,6 +36,25 @@ int main(int argc, char** argv){
 	 sizeof(serv_addr))== -1){
 		printf("bind()error");
 		exit(1);
+	}
+	printf("call mysql_init()\n");
+
+	mysql_init(&mysql);
+
+	printf("call mysql_read_connect()\n");
+
+	char sqlpass[30];
+	memset(sqlpass, 0, sizeof(sqlpass));
+	printf("enter sql pass: ");
+	scanf("%s", sqlpass);
+
+	if(!mysql_real_connect(&mysql, "localhost", "root", sqlpass, 
+"br", 0, (char*)NULL, 0)){
+		printf("%s\n", mysql_error(&mysql));
+		exit(1);
+	}
+	else{
+		printf("connected\n");
 	}
 
 	while(1){

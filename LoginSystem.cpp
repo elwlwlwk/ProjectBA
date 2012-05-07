@@ -149,7 +149,7 @@ int Reconnect(char* id, SOCKET Socket){
 	Player* PlayerTail= PlayerHead;
 	while(PlayerTail!= NULL){
 		if(strcmp(PlayerTail->GetClntId(), id)== 0){
-			PlayerTail->Connect();
+			PlayerTail->SetConnection(true);
 			PlayerTail->SetSocket(Socket);
 			return 0;
 		}

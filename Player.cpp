@@ -1,5 +1,16 @@
 #include "Player.h"
 #include <stdio.h>
+#include <stdlib.h>
+
+void Player::Disconnect(){
+	connected= false;
+	close(hClnt);
+
+	char query[100];
+	memset(query, 0, sizeof(query));
+	sprintf(query, "update br_characters set PosX= %d, PosY= %d where CharName= \'%s\';", Posx, Posy, name);
+	SendQuery(query);
+}
 
 Player::Player(SOCKET hClnt, char* name){
 	this->hClnt= hClnt;
@@ -7,7 +18,7 @@ Player::Player(SOCKET hClnt, char* name){
 	memcpy(this->name, name, 30);
 	NextNode= NULL;
 	connected= true;
-	PosX= PosY= 0;
+	Posx= Posy= 0;
 }
 
 
@@ -43,8 +54,7 @@ int Player::GetClntMessage(char* buffer){
 	}while(buffer[index++]!= 0);
 	printf("%s's result is %d",name, result);
 	if(result== -1|| result== 0){
-		this->connected= false;
-		close(hClnt);
+		Disconnect();
 	}
 }
 
@@ -57,14 +67,6 @@ void Player::SendClntMessage(char* message){
 	}
 }
 
-void Player::DisConnect(){
-	connected= false;
-}
-
-void Player::Connect(){
-	connected= true;
-}
-
 void Player::SetSocket(SOCKET Socket){
 	hClnt= Socket;
 }
@@ -73,12 +75,16 @@ bool Player::GetConnect(){
 	return connected;
 }
 
+void Player::SetConnection(bool connection){
+	connected= connection;
+}
+
 
 int Player::PlayerMessageProc(char* message){
 	char recvmes[5][30];
-	memset(recvmes, 0, sizeof(recvmes);
+	memset(recvmes, 0, sizeof(recvmes));
 
-	for(int i= 0, int k= 0, int m= 0, int m= 0; message[i]!= 0|| i<100; i++){
+	for(int i= 0, k= 0, m= 0; message[i]!= 0|| i<100; i++){
 		if(message[i]== ' '){
 			m= 0;
 			k++;
@@ -88,16 +94,21 @@ int Player::PlayerMessageProc(char* message){
 	}
 
 	if(strcmp(recvmes[1], "MOVE")== 0){
-		x= atoi(recvmes[3]);
-		y= atoi(recvmes[4]);
+		Posx= atoi(recvmes[3]);
+		Posy= atoi(recvmes[4]);
 	}
-	reutnr 0;
+	return 0;
 }
 
 
 void Player::SetPos(int x, int y){
-	PosX= x;
-	PosY= y;
+	Posx= x;
+	Posy= y;
 }
 
-void Player::
+int Player::SendQuery(char* query){
+	extern MYSQL mysql;
+	mysql_real_query(&mysql, query, strlen(query));
+
+	return 0;
+}

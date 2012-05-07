@@ -1,4 +1,5 @@
 #include "Windows.h"
+#include "SqlLib.h"
 
 class Player{
 private:
@@ -9,6 +10,8 @@ private:
 	int Posx;
 	int Posy;
 
+	void Disconnect();
+
 public:
 	Player(SOCKET hClnt, char* name);
 	~Player(void);
@@ -18,12 +21,11 @@ public:
 	int GetClntMessage(char* buffer);
 	char* GetClntId();
 	void SendClntMessage(char* message);
-	void DisConnect();
-	void Connect();
 	void SetSocket(SOCKET Socket);
 	bool GetConnect();
+	void SetConnection(bool connection);
 
-	void setPos(int PosX, int PosY);
+	void SetPos(int PosX, int PosY);
 	int PlayerMessageProc(char* message);
-	void SavePlayerData(char* query);
+	int SendQuery(char* query);
 };
