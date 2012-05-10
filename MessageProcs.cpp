@@ -8,10 +8,14 @@ Player* Playerlist= PlayerHead;
 void DefMessageProc(char* message, Player* threadPlayer){
 	char order[30];
 	memset(order, 0, sizeof(order));
-	for(int i=0; message[i]!= ' '; i++){
+	for(int i=0; message[i]!= ' '&& i<30; i++){
 		order[i]= message[i];
 	}
-	if(strcmp(order, "PRGTA")== 0){
+	if(strcmp(order, "ASKINFO")== 0){
+		printf("call InitPlayerProc()\n");
+		InitPlayerProc(message, threadPlayer);
+	}
+	else if(strcmp(order, "PRGTA")== 0){
 		printf("call PropagateAllMessageProc()\n");
 		PropagateAllProc(message, threadPlayer);
 	}
@@ -24,6 +28,9 @@ void DefMessageProc(char* message, Player* threadPlayer){
 		printf("Call SsendMessageProc()\n");
 		SsendProc(message, threadPlayer);
 	}
+	else
+		printf("Invalid Message\n");
+	printf("DefMessageProc() end\n");
 }
 
 void PropagateProc(char* message, Player* threadPlayer){
@@ -165,4 +172,45 @@ void TrunMessageProc(char* message, Player* threadPlayer){
 		PlayerTail= PlayerTail->GetNextNode();
 	}
 	printf("send message: %s\n", Tempmessage);
+}
+
+void InitPlayerProc(char* message, Player* threadPlayer){
+	char id[30];
+	char query[100];
+	memset(id, 0, sizeof(id));
+	memset(query, 0, sizeof(query));
+
+	MYSQL_RES* res;
+	int fields;
+
+	sprintf(query, "select * from br_characters where CharName='%s'", 
+threadPlayer->GetClntId());
+
+	printf("send query: %s\n", query);
+
+	threadPlayer->SendQuery(query, &res, &fields);
+
+	MYSQL_ROW row;
+
+	printf("call mysql_fetch_row()\n");
+	row= mysql_fetch_row(res);
+
+	printf("mysql_fetch_row() end\n");
+
+	char tempMessage[100];
+	memset(tempMessage, 0, sizeof(tempMessage));
+	sprintf(tempMessage, "INITP LOCATION %s %s %s", row[7], row[8], row[9]);
+	printf("send InitMessage: %s\n", tempMessage);
+	threadPlayer->SendClntMessage(tempMessage);
+
+	memset(tempMessage, 0, sizeof(tempMessage));
+	sprintf(tempMessage, "INITP END");
+	printf("send InitMEssage: %s\n", tempMessage);
+	threadPlayer->SendClntMessage(tempMessage);
+
+	printf("call mysql_free_result\n");
+
+	mysql_free_result(res);
+
+	printf("call mysql_free_result() end\n");
 }

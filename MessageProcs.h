@@ -11,3 +11,5 @@ void SsendProc(char* message, Player* threadPlayer);
 void MoveMessageProc(char* message, Player* threadPlayer);
 
 void TrunMessageProc(char* message, Player* threadPlayer);
+
+void InitPlayerProc(char* message, Player* threadPlayer);

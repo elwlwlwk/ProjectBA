@@ -9,6 +9,7 @@ private:
 	bool connected;
 	int Posx;
 	int Posy;
+	char arena[30];
 
 	void Disconnect();
 
@@ -27,5 +28,5 @@ public:
 
 	void SetPos(int PosX, int PosY);
 	int PlayerMessageProc(char* message);
-	int SendQuery(char* query);
+	int SendQuery(char* query, MYSQL_RES** res, int* fields);
 };
