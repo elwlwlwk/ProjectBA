@@ -13,3 +13,7 @@ void MoveMessageProc(char* message, Player* threadPlayer);
 void TrunMessageProc(char* message, Player* threadPlayer);
 
 void InitPlayerProc(char* message, Player* threadPlayer);
+
+void StartPlayProc(char* message, Player* threadPlayer);
+
+void CHMapProc(char* message, Player* threadPlayer);

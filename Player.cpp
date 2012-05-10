@@ -145,6 +145,15 @@ int Player::PlayerMessageProc(char* message){
 	return 0;
 }
 
+void Player::SendPosInfo(Player* targetPlayer){
+	char tempMessage[100];
+	memset(tempMessage, 0, sizeof(tempMessage));
+
+	sprintf(tempMessage, "MOVE %s %d %d", name, Posx, Posy);
+	if(strcmp(targetPlayer->GetClntId(), name)!= 0)
+		targetPlayer->SendClntMessage(tempMessage);
+
+}
 
 void Player::SetPos(int x, int y){
 	Posx= x;

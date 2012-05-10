@@ -28,6 +28,15 @@ void DefMessageProc(char* message, Player* threadPlayer){
 		printf("Call SsendMessageProc()\n");
 		SsendProc(message, threadPlayer);
 	}
+	else if(strcmp(order, "STARTPLAY")== 0){
+		printf("Call StartPlayProc()\n");
+		StartPlayProc(message, threadPlayer);
+	}
+	else if(strcmp(order, "CHMAP")== 0){
+		printf("Call CHMap()\n");
+		CHMapProc(message, threadPlayer);
+//		StartPlayProc(message, threadPlayer);
+	}
 	else
 		printf("Invalid Message\n");
 	printf("DefMessageProc() end\n");
@@ -60,6 +69,7 @@ void PropagateProc(char* message, Player* threadPlayer){
 void PropagateAllProc(char* message, Player* threadPlayer){
 	char Tempmessage[100];
 	memset(Tempmessage, 0, sizeof(Tempmessage));
+
 	for(int i= 0, k= 0, m= 0; message[i]!= 0; i++){
 		if(message[i]== ' '&& k== 0){
 			k++;
@@ -213,4 +223,83 @@ threadPlayer->GetClntId());
 	mysql_free_result(res);
 
 	printf("call mysql_free_result() end\n");
+}
+
+void StartPlayProc(char* message, Player* threadPlayer){
+	char query[100];
+	char toOthers[100];
+	MYSQL_RES* res;
+	MYSQL_ROW row;
+	int fields;
+	memset(query, 0, sizeof(query));
+
+	sprintf(query, "select * from br_characters");
+	threadPlayer->SendQuery(query, &res, &fields);
+
+	while(row= mysql_fetch_row(res)){
+		char tempMessage[100];
+		memset(tempMessage, 0, sizeof(tempMessage));
+		if(strcmp(threadPlayer->GetClntId(), row[2])== 0){
+			sprintf(toOthers, "ENTERP %s %s %s %s", row[2], row[7], 
+row[8], row[9]);
+			continue;
+		}
+		sprintf(tempMessage, "ENTERP %s %s %s %s", row[2], row[7], 
+row[8], row[9]);
+		threadPlayer->SendClntMessage(tempMessage);
+
+	}
+
+	Player* PlayerTail= PlayerHead;
+	while(PlayerTail!= NULL){
+		if(strcmp(PlayerTail->GetClntId(), threadPlayer->GetClntId())
+!= 0){
+			PlayerTail->SendClntMessage(toOthers);
+		}
+		PlayerTail= PlayerTail->GetNextNode();
+	}
+
+	mysql_free_result(res);
+
+	PlayerTail= PlayerHead;
+
+	while(PlayerTail!= NULL){
+		if(PlayerTail->GetConnect()== true){
+			PlayerTail->SendPosInfo(threadPlayer);
+		}
+		PlayerTail= PlayerTail->GetNextNode();
+	}
+
+}
+
+void CHMapProc(char* message, Player* threadPlayer){
+
+	char arena[30];
+	memset(arena, 0, sizeof(arena));
+
+	for(int i= 0, k= 0, m= 0; i<100; i++){
+		if(message[i]== ' '){
+			k++;
+			i++;
+		}
+		if(k== 2){
+			arena[m++]= message[i];
+		}
+	}
+
+	printf("CHMAP arena to %s\n", arena);
+
+	char query[100];
+	MYSQL_RES* res;
+	int fields;
+	memset(query, 0, sizeof(query));
+	sprintf(query, 
+"update br_characters set arena= '%s' where CharName= '%s'", arena
+, threadPlayer->GetClntId());
+
+	threadPlayer->SendQuery(query, &res, &fields);
+
+	mysql_free_result(res);
+
+	StartPlayProc(message, threadPlayer);
 }

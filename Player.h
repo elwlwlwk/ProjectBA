@@ -26,6 +26,8 @@ public:
 	bool GetConnect();
 	void SetConnection(bool connection);
 
+	void SendPosInfo(Player* targetPlayer);
+
 	void SetPos(int PosX, int PosY);
 	int PlayerMessageProc(char* message);
 	int SendQuery(char* query, MYSQL_RES** res, int* fields);
