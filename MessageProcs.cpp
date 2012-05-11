@@ -1,5 +1,6 @@
 #include "MessageProcs.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 
 extern Player* PlayerHead;
@@ -45,11 +46,36 @@ void DefMessageProc(char* message, Player* threadPlayer){
 void PropagateProc(char* message, Player* threadPlayer){
 	printf("propagateProc() called\n");
 	char Tempmessage[100];
+	char order[30];
+	char Posx[30];
+	char Posy[30];
+	char Name[30];
+	memset(order, 0, sizeof(order));
 	memset(Tempmessage, 0, sizeof(Tempmessage));
-	for(int i= 0, k= 0, m= 0; message[i]!= 0; i++){
+	memset(Posx, 0, sizeof(Posx));
+	memset(Posy, 0, sizeof(Posy));
+	memset(Name, 0, sizeof(Name));
+	for(int i= 0, k= 0, m= 0,n= 0; message[i]!= 0; i++){
 		if(message[i]== ' '&& k== 0){
-			k++;
 			i++;
+			k++;
+			n= 0;
+		}
+		if(message[i]== ' '){
+			k++;
+			n= 0;
+		}
+		if(k== 1&& message[i]!= ' '){
+			order[n++]= message[i];
+		}
+		else if(k== 2&& message[i]!= ' '){
+			Name[n++]= message[i];
+		}
+		else if(k== 3&& message[i]!= ' '){
+			Posx[n++]= message[i];
+		}
+		else if(k== 4&& message[i]!= ' '){
+			Posy[n++]= message[i];
 		}
 		if(k>0){
 			Tempmessage[m++]= message[i];
@@ -63,6 +89,22 @@ void PropagateProc(char* message, Player* threadPlayer){
 			PlayerTail->SendClntMessage(Tempmessage);
 		}
 		PlayerTail= PlayerTail->GetNextNode();
+	}
+
+	printf("PRGT UpdateMoveProc()\n");
+	printf("order is %s\n", order);
+	if(strcmp(order, "MOVE")== 0){
+		PlayerTail= PlayerHead;
+
+		while(PlayerTail!= NULL){
+			printf("Pos is %s %s", Posx, Posy);
+			printf("Set %s's Pos to %d %d", 
+PlayerTail->GetClntId(), atoi(Posx), atoi(Posy));
+			if(strcmp(PlayerTail->GetClntId(), Name)== 0){
+				PlayerTail->SetPos(atoi(Posx), atoi(Posy));
+			}
+			PlayerTail= PlayerTail->GetNextNode();
+		}
 	}
 }
 
