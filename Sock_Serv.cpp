@@ -48,7 +48,7 @@ int main(int argc, char** argv){
 	printf("enter sql pass: ");
 	scanf("%s", sqlpass);
 
-	if(!mysql_real_connect(&mysql, "localhost", "root", sqlpass, 
+	if(!mysql_real_connect(&mysql, "localhost", "creeper", sqlpass, 
 "br", 0, (char*)NULL, 0)){
 		printf("%s\n", mysql_error(&mysql));
 		exit(1);

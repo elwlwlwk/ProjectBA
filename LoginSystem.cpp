@@ -27,7 +27,12 @@ void NewMember(char* message, SOCKET* hClntSock){
 	int id_index=0 ;
 	int password_index= 0;
 	int index= 0;
-	FILE* UserList;
+	Player Dummy;
+//	FILE* UserList;
+
+	char query[100];
+
+	memset(query, 0, sizeof(query));
 
 	memset(id, 0, sizeof(id));
 	memset(password, 0, sizeof(password));
@@ -46,6 +51,40 @@ void NewMember(char* message, SOCKET* hClntSock){
 			password[password_index++]= message[i];
 		}
 	}
+
+	sprintf(query, "select * from br_account where ID= '%s'", id);
+
+	MYSQL_RES *res;
+	int fields;
+
+	Dummy.SendQuery(query, &res, &fields);
+	if(res!= NULL){
+		send(*hClntSock, "overlaped id", 13, 0);
+		mysql_free_result(res);
+		return;
+	}
+
+	memset(query, 0, sizeof(query));
+
+	sprintf(query, 
+"insert into br_account values('%s', '%s', 'NULL', 'NULL');", 
+id, password);
+
+	printf("Send Query: %s\n", query);
+	Dummy.SendQuery(query, &res, &fields);
+	mysql_free_result(res);
+
+	memset(query, 0, sizeof(query));
+
+	sprintf(query, 
+"insery into br_characters values(%d, %d, '%s', %d, %d, %d, %d, '%s', %d, %d, %d, %d, %d, %d, %d", 
+0, 0, id, 1000, 1000, 1000, 1000, "cabin", -170, 18, 0, 0, 0, 0, 0);
+
+	printf("Send Query: %s\n", query);
+	Dummy.SendQuery(query, &res, &fields);
+	mysql_free_result(res);
+
+/*
 	UserList= fopen("Members.dat", "at");
 
 	fprintf(UserList, "ID: %s\n", id);
@@ -54,9 +93,10 @@ void NewMember(char* message, SOCKET* hClntSock){
 	if(fclose(UserList)!= 0){
 		printf("file close error\n");
 	}
+*/
 	char servmessage[100]="WELCOME";
 	send(*hClntSock, servmessage, 100, 0);
-	printf("%s Loged in", id);
+	printf("NewMember: %s", id);
 }
 
 void Login(char* message, SOCKET* hClntSock){

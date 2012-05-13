@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "SqlLib.h"
 
 void DefMessageProc(char* message, Player* threadPlayer);
 

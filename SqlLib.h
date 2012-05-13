@@ -14,3 +14,12 @@ int InitSql(MYSQL* mysql){
 	return 0;
 }
 */
+/*
+int MySendQuery(char* query, MYSQL_RES** res, int* fields){
+	extern MYSQL mysql;
+	mysql_real_query(&mysql, query, strlen(query));
+	*res= mysql_store_result(&mysql);
+	*fields= mysql_field_count(&mysql);
+	return 0;
+}
+*/

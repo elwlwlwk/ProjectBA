@@ -14,6 +14,7 @@ private:
 	void Disconnect();
 
 public:
+	Player(){};
 	Player(SOCKET hClnt, char* name);
 	~Player(void);
 
