@@ -9,7 +9,7 @@ void Player::Disconnect(){
 	char query[100];
 	memset(query, 0, sizeof(query));
 	sprintf(query, 
-"update br_characters set arena= '%s', PosX= %d, PosY= %d where CharName= \'%s\';", 
+"update BR_Characters set arena= '%s', PosX= %d, PosY= %d where CharName= \'%s\';", 
 arena ,Posx, Posy, name);
 	printf("Send Query %s\n", query);
 	MYSQL_RES* res;
@@ -31,7 +31,7 @@ Player::Player(SOCKET hClnt, char* name){
 
 	char query[100];
 	memset(query, 0, sizeof(0));
-	sprintf(query, "select * from br_characters where CharName= '%s'", 
+	sprintf(query, "select * from BR_Characters where CharName= '%s'", 
 name);
 
 	MYSQL_RES* res;

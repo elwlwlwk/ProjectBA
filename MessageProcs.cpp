@@ -116,7 +116,7 @@ PlayerTail->GetClntId(), atoi(Posx), atoi(Posy));
 			PlayerTail= PlayerTail->GetNextNode();
 		}
 		sprintf(query, 
-"update br_characters set PosX= %d, PosY= %d where CharName= '%s'", 
+"update BR_Characters set PosX= %d, PosY= %d where CharName= '%s'", 
 atoi(Posx), atoi(Posy), Name);
 		printf("UPDATE POSITION QUERY: %s\n", query);
 		threadPlayer->SendQuery(query, &res, &fields);
@@ -252,7 +252,7 @@ void InitPlayerProc(char* message, Player* threadPlayer){
 	MYSQL_RES* res;
 	int fields;
 
-	sprintf(query, "select * from br_characters where CharName='%s'", 
+	sprintf(query, "select * from BR_Characters where CharName='%s'", 
 threadPlayer->GetClntId());
 
 	printf("send query: %s\n", query);
@@ -302,7 +302,7 @@ void StartPlayProc(char* message, Player* threadPlayer){
 	int fields;
 	memset(query, 0, sizeof(query));
 
-	sprintf(query, "select * from br_characters");
+	sprintf(query, "select * from BR_Characters");
 	threadPlayer->SendQuery(query, &res, &fields);
 
 	while(row= mysql_fetch_row(res)){
@@ -363,7 +363,7 @@ void CHMapProc(char* message, Player* threadPlayer){
 	int fields;
 	memset(query, 0, sizeof(query));
 	sprintf(query, 
-"update br_characters set arena= '%s' where CharName= '%s'", arena
+"update BR_Characters set arena= '%s' where CharName= '%s'", arena
 , threadPlayer->GetClntId());
 
 	threadPlayer->SendQuery(query, &res, &fields);
@@ -401,7 +401,7 @@ void AddHpProc(char* message, Player* threadPlayer){
 		}
 	}
 
-	sprintf(query, "select * br_characters form CharName= '%s'", 
+	sprintf(query, "select * BR_Characters form CharName= '%s'", 
 victim);
 
 	threadPlayer->SendQuery(query, &res, &fields);
@@ -416,14 +416,14 @@ victim);
 
 	if(victimhp- dishp> 0){
 		sprintf(query, 
-"update br_characters set Hit= %d where CharName= '%s'", 
+"update BR_Characters set Hit= %d where CharName= '%s'", 
 victimhp- dishp, victim);
 		threadPlayer->SendQuery(query, &res, &fields);
 		mysql_free_result(res);
 	}
 	else{
 		sprintf(query, 
-"update br_characters set Hit= %d, CharStatus= 'DEAD' where CharName= '%s'", 
+"update BR_Characters set Hit= %d, CharStatus= 'DEAD' where CharName= '%s'", 
 0, victim);
 		threadPlayer->SendQuery(query, &res, &fields);
 		mysql_free_result(res);

@@ -33,10 +33,13 @@ void NewMember(char* message, SOCKET* hClntSock){
 	char query[100];
 
 	memset(query, 0, sizeof(query));
-
+	printf("%s", message);
+	printf("NewMemberCalled\n");
 	memset(id, 0, sizeof(id));
 	memset(password, 0, sizeof(password));
+	printf("memset over");
 
+	int c[10];
 	for(int i=0; i<100; i++){
 		if(message[i]== 0)
 			break;
