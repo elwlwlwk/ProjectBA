@@ -18,3 +18,5 @@ void InitPlayerProc(char* message, Player* threadPlayer);
 void StartPlayProc(char* message, Player* threadPlayer);
 
 void CHMapProc(char* message, Player* threadPlayer);
+
+void AddHpProc(char* message, Player* threadPlayer);
