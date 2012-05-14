@@ -45,6 +45,13 @@ void DefMessageProc(char* message, Player* threadPlayer){
 
 void PropagateProc(char* message, Player* threadPlayer){
 	printf("propagateProc() called\n");
+
+	char query[100];
+	MYSQL_RES* res;
+	int fields;
+	MYSQL_ROW row;
+	memset(query, 0, sizeof(100));
+
 	char Tempmessage[100];
 	char order[30];
 	char Posx[30];
@@ -84,7 +91,7 @@ void PropagateProc(char* message, Player* threadPlayer){
 	Player* PlayerTail= PlayerHead;
 	printf("send except itself\n");
 	while(PlayerTail!= NULL){
-		if(strcmp(PlayerTail->GetClntId(), threadPlayer->GetClntId())
+		if(strcmp(PlayerTail->GetClntId(), threadPlayer->GetClntId()!= 0)
 != 0)		{
 			PlayerTail->SendClntMessage(Tempmessage);
 		}
@@ -97,14 +104,20 @@ void PropagateProc(char* message, Player* threadPlayer){
 		PlayerTail= PlayerHead;
 
 		while(PlayerTail!= NULL){
-			printf("Pos is %s %s", Posx, Posy);
-			printf("Set %s's Pos to %d %d", 
-PlayerTail->GetClntId(), atoi(Posx), atoi(Posy));
 			if(strcmp(PlayerTail->GetClntId(), Name)== 0){
+				printf("set %s's pos to %d %d\n", 
+PlayerTail->GetClntId(), atoi(Posx), atoi(Posy));
 				PlayerTail->SetPos(atoi(Posx), atoi(Posy));
 			}
 			PlayerTail= PlayerTail->GetNextNode();
 		}
+		sprintf(query, 
+"update br_characters set PosX= %d, PosY= %d where CharName= '%s'", 
+atoi(Posx), atoi(Posy), Name);
+		printf("UPDATE POSITION QUERY: %s\n", query);
+		threadPlayer->SendQuery(query, &res, &fields);
+		mysql_free_result(res);
+
 	}
 }
 
@@ -252,6 +265,16 @@ threadPlayer->GetClntId());
 	char tempMessage[100];
 	memset(tempMessage, 0, sizeof(tempMessage));
 	sprintf(tempMessage, "INITP LOCATION %s %s %s", row[7], row[8], row[9]);
+	printf("send InitMessage: %s\n", tempMessage);
+	threadPlayer->SendClntMessage(tempMessage);
+
+	memset(tempMessage, 0, sizeof(tempMessage));
+	sprintf(tempMessage, "INITP HP %s %s", row[4], row[3]);
+	printf("send InitMessage: %s\n", tempMessage);
+	threadPlayer->SendClntMessage(tempMessage);
+
+	memset(tempMessage, 0, sizeof(tempMessage));
+	sprintf(tempMessage, "INIT STA %s %s", row[6], row[5]);
 	printf("send InitMessage: %s\n", tempMessage);
 	threadPlayer->SendClntMessage(tempMessage);
 
