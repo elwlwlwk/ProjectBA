@@ -49,10 +49,11 @@ int main(int argc, char** argv){
 	scanf("%s", sqlpass);
 
 	if(!mysql_real_connect(&mysql, "localhost", "creeper", sqlpass, 
-"br", 0, (char*)NULL, 0)){
+"br", 0, (char*)NULL, CLIENT_MULTI_STATEMENTS)){
 		printf("%s\n", mysql_error(&mysql));
 		exit(1);
 	}
+
 	else{
 		printf("connected\n");
 	}

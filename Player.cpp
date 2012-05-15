@@ -9,7 +9,7 @@ void Player::Disconnect(){
 	char query[100];
 	memset(query, 0, sizeof(query));
 	sprintf(query, 
-"update BR_Characters set arena= '%s', PosX= %d, PosY= %d where CharName= \'%s\';", 
+"update BR_Characters set Arena= '%s', PosX= %d, PosY= %d where CharName= \'%s\';", 
 arena ,Posx, Posy, name);
 	printf("Send Query %s\n", query);
 	MYSQL_RES* res;
@@ -38,8 +38,13 @@ name);
 	int fields;
 	MYSQL_ROW row;
 
+
 	printf("init Call SendQuery()\n");
 	SendQuery(query, &res, &fields);
+
+	if(res== NULL){
+		printf("error at 1 res is NULL\n");
+	}
 
 	printf("init call fetch_row()\n");
 	row= mysql_fetch_row(res);

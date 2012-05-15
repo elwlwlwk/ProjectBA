@@ -51,11 +51,11 @@ void DefMessageProc(char* message, Player* threadPlayer){
 void PropagateProc(char* message, Player* threadPlayer){
 	printf("propagateProc() called\n");
 
-	char query[100];
-	MYSQL_RES* res;
-	int fields;
-	MYSQL_ROW row;
-	memset(query, 0, sizeof(100));
+//	char query[100];
+//	MYSQL_RES* res;
+//	int fields;
+//	MYSQL_ROW row;
+//	memset(query, 0, sizeof(100));
 
 	char Tempmessage[100];
 	char order[30];
@@ -115,13 +115,13 @@ PlayerTail->GetClntId(), atoi(Posx), atoi(Posy));
 			}
 			PlayerTail= PlayerTail->GetNextNode();
 		}
-		sprintf(query, 
+/*		sprintf(query, 
 "update BR_Characters set PosX= %d, PosY= %d where CharName= '%s'", 
 atoi(Posx), atoi(Posy), Name);
 		printf("UPDATE POSITION QUERY: %s\n", query);
 		threadPlayer->SendQuery(query, &res, &fields);
 		mysql_free_result(res);
-
+*/
 	}
 }
 
@@ -259,6 +259,9 @@ threadPlayer->GetClntId());
 
 	threadPlayer->SendQuery(query, &res, &fields);
 
+	if(res== NULL){
+		printf("erorr in 2 res is NULL\n");
+	}
 	MYSQL_ROW row;
 
 	printf("call mysql_fetch_row()\n");
@@ -273,7 +276,7 @@ threadPlayer->GetClntId());
 	threadPlayer->SendClntMessage(tempMessage);
 
 	memset(tempMessage, 0, sizeof(tempMessage));
-	sprintf(tempMessage, "INITP HP %s %s", row[4], row[3]);
+	sprintf(tempMessage, "INITP HP %s %s", row[3], row[4]);
 	printf("send InitMessage: %s\n", tempMessage);
 	threadPlayer->SendClntMessage(tempMessage);
 
@@ -305,6 +308,9 @@ void StartPlayProc(char* message, Player* threadPlayer){
 	sprintf(query, "select * from BR_Characters");
 	threadPlayer->SendQuery(query, &res, &fields);
 
+	if(res== NULL){
+		printf("error in 3 res is NULL\n");
+	}
 	while(row= mysql_fetch_row(res)){
 		char tempMessage[100];
 		memset(tempMessage, 0, sizeof(tempMessage));
@@ -315,6 +321,13 @@ row[8], row[9]);
 		}
 		sprintf(tempMessage, "ENTERP %s %s %s %s", row[2], row[7], 
 row[8], row[9]);
+		threadPlayer->SendClntMessage(tempMessage);
+
+		memset(tempMessage, 0, sizeof(tempMessage));
+//		if(strcmp(row[14], "alive")== 0){
+//			continue;
+//		}
+		sprintf(tempMessage, "CHWEAPON %s %s", row[2], row[14]);
 		threadPlayer->SendClntMessage(tempMessage);
 
 	}
@@ -346,10 +359,11 @@ void CHMapProc(char* message, Player* threadPlayer){
 	char arena[30];
 	memset(arena, 0, sizeof(arena));
 
-	for(int i= 0, k= 0, m= 0; i<100; i++){
+	for(int i= 0, k= 0, m= 0; i<100&& message[i]!= 0; i++){
 		if(message[i]== ' '){
 			k++;
 			i++;
+			m= 0;
 		}
 		if(k== 2){
 			arena[m++]= message[i];
@@ -357,19 +371,24 @@ void CHMapProc(char* message, Player* threadPlayer){
 	}
 
 	printf("CHMAP arena to %s\n", arena);
-
+	printf("before query\n");
 	char query[100];
 	MYSQL_RES* res;
 	int fields;
+	printf("before memset");
 	memset(query, 0, sizeof(query));
-	sprintf(query, 
-"update BR_Characters set arena= '%s' where CharName= '%s'", arena
-, threadPlayer->GetClntId());
 
+	printf("CHMAP set query");
+	sprintf(query, 
+"update BR_Characters set Arena= '%s' where CharName= '%s'", arena
+, threadPlayer->GetClntId());
+	printf("query is %s", query);
+	printf("CHMAP SendQuery()");
 	threadPlayer->SendQuery(query, &res, &fields);
 
 	mysql_free_result(res);
 
+	printf("StartPlayProc()");
 	StartPlayProc(message, threadPlayer);
 }
 
@@ -390,6 +409,7 @@ void AddHpProc(char* message, Player* threadPlayer){
 
 	for(int i= 0, k= 0, m= 0; i< 100; i++){
 		if(message[i]== ' '){
+			i++;
 			k++;
 			m= 0;
 		}
@@ -401,29 +421,37 @@ void AddHpProc(char* message, Player* threadPlayer){
 		}
 	}
 
-	sprintf(query, "select * BR_Characters form CharName= '%s'", 
+
+	printf("%s\n", victim);
+	sprintf(query, "select * from BR_Characters where CharName= '%s'", 
 victim);
 
 	threadPlayer->SendQuery(query, &res, &fields);
+	if(res == NULL){
+		printf("error in 5 res is NULL\n");
+	}
 	MYSQL_ROW row;
+	printf("berfore fetch\n");
 	row= mysql_fetch_row(res);
+
+	printf("change row to value\n");
 
 	int victimhp= atoi(row[3]);
 	int dishp= atoi(amount);
 
 	mysql_free_result(res);
 	memset(query, 0, sizeof(query));
-
-	if(victimhp- dishp> 0){
+	printf("berfore compare\n");
+	if(victimhp+ dishp> 0){
 		sprintf(query, 
 "update BR_Characters set Hit= %d where CharName= '%s'", 
-victimhp- dishp, victim);
+victimhp+ dishp, victim);
 		threadPlayer->SendQuery(query, &res, &fields);
 		mysql_free_result(res);
 	}
 	else{
 		sprintf(query, 
-"update BR_Characters set Hit= %d, CharStatus= 'DEAD' where CharName= '%s'", 
+"update BR_Characters set Hit= %d, CharStatus= 'dead' where CharName= '%s'", 
 0, victim);
 		threadPlayer->SendQuery(query, &res, &fields);
 		mysql_free_result(res);
