@@ -28,7 +28,7 @@ void NewMember(char* message, SOCKET* hClntSock){
 	int password_index= 0;
 	int index= 0;
 	Player Dummy;
-//	FILE* UserList;
+	FILE* UserList;
 
 	char query[100];
 
@@ -103,6 +103,87 @@ id, password);
 }
 
 void Login(char* message, SOCKET* hClntSock){
+
+	char id[30];
+	char password[30];
+	char tempMessage[100];
+
+	char query[100];
+	MYSQL_RES *res= NULL;
+	int fields= 0;
+	Player Dummy;
+
+	memset(id, 0, sizeof(id));
+	memset(password, 0, sizeof(password));
+	memset(tempMessage, 0, sizeof(tempMessage));
+	memset(query, 0, sizeof(query));
+
+	for(int i= 0, k= 0, m= 0; i<100&& message[i]!= 0; i++){
+		if(message[i]== ' '){
+			i++;
+			k++;
+			m= 0;
+		}
+		if(k== 1){
+			id[m++]= message[i];
+		}
+		else if(k== 2){
+			password[m++]= message[i];
+		}
+	}
+
+	printf("Login from %s %s\n", id, password);
+
+	sprintf(query, "select * from BR_Account where ID='%s'and Pass='%s'\n", id, password);
+
+	printf("query is %s\n", query);
+	Dummy.SendQuery(query, &res, &fields);
+
+	printf("%d, %d\n", res, fields);
+
+	if(res== NULL|| fields== 0){
+		printf("res is null");
+		sprintf(tempMessage, "INVALIDACCOUNT");
+		send((*hClntSock), tempMessage, 100, 0);
+		return;
+	}
+	else{
+		MYSQL_ROW row;
+		row= mysql_fetch_row(res);
+
+		Player* PlayerTail= PlayerHead;
+
+		while(PlayerTail!= NULL){
+			if(strcmp(PlayerTail->GetClntId(), id)== 0){
+				printf("in alreadyusr\n");
+				break;
+			}
+			PlayerTail= PlayerTail->GetNextNode();
+		}
+		if(PlayerTail== NULL){
+			printf("PlayerTail is NULL\n");
+		}
+
+		if(PlayerTail!= NULL&& PlayerTail->GetConnect()== true){
+                        printf("another user is using\n");
+                        sprintf(tempMessage, "ANOTHERUSERISUSING");
+                        send((*hClntSock), tempMessage, 100, 0);
+			return;
+                }
+
+
+		printf("Login Success\n");
+		int result= Reconnect(id, (*hClntSock));
+		if(result== 1){
+			printf("call MakeNewThread\n");
+			sprintf(tempMessage, "VALIDACCOUNT");
+			printf("Send %s to %d\n", tempMessage, *hClntSock);
+			send((*hClntSock), tempMessage, 100, 0);
+			MakeNewThread(&PlayerHead, (*hClntSock), id);
+		}
+	}
+
+/*
 	char id[30];
 	char password[30];
 	char UserId[30];
@@ -166,6 +247,7 @@ void Login(char* message, SOCKET* hClntSock){
 		strcat(TempUserId, wtf);
 		strcat(TempUserPassword, wtf);
 
+		printf("*************%d", (*hClntSock));
 		if((strcmp(TempUserId, UserId)==0)&& (strcmp(TempUserPassword, UserPassword)== 0)){
 			printf("Login Success\n");
 			strcpy(ServMessage, "VALIDACCOUNT");
@@ -186,6 +268,7 @@ void Login(char* message, SOCKET* hClntSock){
 		memset(TempUserPassword, 0, sizeof(TempUserPassword));
 		memset(TempUserId, 0, sizeof(TempUserId));
 	}
+*/
 }
 
 int Reconnect(char* id, SOCKET Socket){

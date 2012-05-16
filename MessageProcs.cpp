@@ -102,6 +102,9 @@ void PropagateProc(char* message, Player* threadPlayer){
 		PlayerTail= PlayerTail->GetNextNode();
 	}
 
+
+	extern Player* BackupList;
+	Player* BackupTail= BackupList;
 	printf("PRGT UpdateMoveProc()\n");
 	printf("order is %s\n", order);
 	if(strcmp(order, "MOVE")== 0){
@@ -114,6 +117,16 @@ PlayerTail->GetClntId(), atoi(Posx), atoi(Posy));
 				PlayerTail->SetPos(atoi(Posx), atoi(Posy));
 			}
 			PlayerTail= PlayerTail->GetNextNode();
+		}
+
+		while(BackupTail!= NULL){
+			if(strcmp(BackupTail->GetClntId(), Name)== 0){
+				printf("Set Backup %s's pos\n", 
+BackupTail->GetClntId());
+				BackupTail->SetPos(atoi(Posx), atoi(Posy));
+				break;
+			}
+			BackupTail= BackupTail->GetNextNode();
 		}
 /*		sprintf(query, 
 "update BR_Characters set PosX= %d, PosY= %d where CharName= '%s'", 

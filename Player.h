@@ -14,7 +14,7 @@ private:
 	void Disconnect();
 
 public:
-	Player(){};
+	Player();
 	Player(SOCKET hClnt, char* name);
 	~Player(void);
 
@@ -25,6 +25,8 @@ public:
 	void SendClntMessage(char* message);
 	void SetSocket(SOCKET Socket);
 	bool GetConnect();
+	int GetPosX();
+	int GetPosY();
 	void SetConnection(bool connection);
 
 	void SendPosInfo(Player* targetPlayer);

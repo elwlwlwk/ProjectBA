@@ -2,6 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+Player::Player(){
+	memset(name, 0, sizeof(name));
+	NextNode= 0;
+	memset(arena, 0, sizeof(arena));
+}
+
 void Player::Disconnect(){
 	connected= false;
 	close(hClnt);
@@ -112,6 +118,14 @@ void Player::SetSocket(SOCKET Socket){
 
 bool Player::GetConnect(){
 	return connected;
+}
+
+int Player::GetPosX(){
+	return Posx;
+}
+
+int Player::GetPosY(){
+	return Posy;
 }
 
 void Player::SetConnection(bool connection){

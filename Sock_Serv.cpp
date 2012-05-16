@@ -58,6 +58,9 @@ int main(int argc, char** argv){
 		printf("connected\n");
 	}
 
+	printf("Call initBackupProc\n");
+	InitBackupProc();
+
 	while(1){
 
 		if( listen(serv_sock, 5)== -1){
