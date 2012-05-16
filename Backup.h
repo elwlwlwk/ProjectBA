@@ -3,4 +3,4 @@
 
 void InitBackupProc();
 
-void BackupProc();
+void* BackupProc(void*);

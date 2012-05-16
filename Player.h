@@ -15,6 +15,7 @@ private:
 
 public:
 	Player();
+	Player(char* ID);
 	Player(SOCKET hClnt, char* name);
 	~Player(void);
 

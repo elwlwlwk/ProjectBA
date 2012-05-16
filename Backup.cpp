@@ -24,13 +24,13 @@ void InitBackupProc(){
 	while(row=mysql_fetch_row(res)){
 		printf("fetching\n");
 		if(BackupList== NULL){
-			BackupTail=BackupList= new Player(1, row[2]);
+			BackupTail=BackupList= new Player(row[2]);
 		}
 		else{
 			while(BackupTail->GetNextNode()!= NULL){
 				BackupTail= BackupTail->GetNextNode();
 			}
-			BackupTail->SetNextNode(new Player(1, row[2]));
+			BackupTail->SetNextNode(new Player(row[2]));
 			BackupTail= BackupTail->GetNextNode();
 		}
 
@@ -59,31 +59,36 @@ void InitBackupProc(){
 	printf("end InitBackup\n");
 }
 
-void BackupProc(){
+void* BackupProc(void* trash){
 
-	Player* BackupTail= BackupList;
+	while(1){
+		printf("---------------back up called-------------\n");
+		Player* BackupTail= BackupList;
 
-	while(BackupTail!= NULL){
-		char query[100];
-		memset(query, 0, sizeof(query));
+		while(BackupTail!= NULL){
+			char query[100];
+			memset(query, 0, sizeof(query));
 
-		int Posx= BackupTail->GetPosX();
-		int Posy= BackupTail->GetPosY();
+			int Posx= BackupTail->GetPosX();
+			int Posy= BackupTail->GetPosY();
 
-		sprintf(query, 
+			sprintf(query, 
 "update BR_Characters set PosX= %d, Posy= %d where CharName= '%s'", 
 Posx, Posy, BackupTail->GetClntId());
-		printf("Backup PocSend Query %s", query);
+//			printf("Backup PocSend Query %s", query);
 
-		MYSQL_RES* res;
-		int fields;
-		BackupTail->SendQuery(query, &res, &fields);
+			MYSQL_RES* res;
+			int fields;
+			BackupTail->SendQuery(query, &res, &fields);
 
-		mysql_free_result(res);
+			mysql_free_result(res);
+
+			BackupTail= BackupTail->GetNextNode();
+		}
+
+		printf("end backup proc");
+
+		sleep(1);
 	}
-
-	printf("end backup proc");
-
-	sleep(1);
 
 }

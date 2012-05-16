@@ -178,11 +178,12 @@ void Login(char* message, SOCKET* hClntSock){
 
 		printf("Login Success\n");
 		int result= Reconnect(id, (*hClntSock));
+		printf("call MakeNewThread\n");
+		sprintf(tempMessage, "VALIDACCOUNT");
+		printf("Send %s to %d\n", tempMessage, *hClntSock);
+		send((*hClntSock), tempMessage, 100, 0);
+
 		if(result== 1){
-			printf("call MakeNewThread\n");
-			sprintf(tempMessage, "VALIDACCOUNT");
-			printf("Send %s to %d\n", tempMessage, *hClntSock);
-			send((*hClntSock), tempMessage, 100, 0);
 			MakeNewThread(&PlayerHead, (*hClntSock), id);
 			mysql_free_result(res);
 		}

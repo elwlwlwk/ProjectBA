@@ -8,6 +8,14 @@ Player::Player(){
 	memset(arena, 0, sizeof(arena));
 }
 
+Player::Player(char* ID){
+        memset(name, 0, sizeof(name));
+        NextNode= 0;
+        memset(arena, 0, sizeof(arena));
+	strcpy(name, ID);
+}
+
+
 void Player::Disconnect(){
 	connected= false;
 	close(hClnt);

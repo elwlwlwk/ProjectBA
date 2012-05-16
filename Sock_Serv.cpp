@@ -9,6 +9,7 @@
 
 Player* PlayerHead;
 MYSQL mysql;
+HANDLE BackupThread;
 
 int InitBrSql();
 
@@ -60,6 +61,9 @@ int main(int argc, char** argv){
 
 	printf("Call initBackupProc\n");
 	InitBackupProc();
+
+	printf("Create Backup Thread\n");
+	pthread_create(&BackupThread, NULL, (*BackupProc), NULL);
 
 	while(1){
 
