@@ -139,12 +139,15 @@ void Login(char* message, SOCKET* hClntSock){
 	printf("query is %s\n", query);
 	Dummy.SendQuery(query, &res, &fields);
 
-	printf("%d, %d\n", res, fields);
+	int rows= mysql_num_rows(res);
 
-	if(res== NULL|| fields== 0){
+	printf("%d, %d\n", res, rows);
+
+	if(rows== 0){
 		printf("res is null");
 		sprintf(tempMessage, "INVALIDACCOUNT");
 		send((*hClntSock), tempMessage, 100, 0);
+		mysql_free_result(res);
 		return;
 	}
 	else{
@@ -168,6 +171,7 @@ void Login(char* message, SOCKET* hClntSock){
                         printf("another user is using\n");
                         sprintf(tempMessage, "ANOTHERUSERISUSING");
                         send((*hClntSock), tempMessage, 100, 0);
+			mysql_free_result(res);
 			return;
                 }
 
@@ -180,6 +184,7 @@ void Login(char* message, SOCKET* hClntSock){
 			printf("Send %s to %d\n", tempMessage, *hClntSock);
 			send((*hClntSock), tempMessage, 100, 0);
 			MakeNewThread(&PlayerHead, (*hClntSock), id);
+			mysql_free_result(res);
 		}
 	}
 
