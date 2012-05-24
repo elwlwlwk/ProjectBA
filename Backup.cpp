@@ -73,7 +73,7 @@ void* BackupProc(void* trash){
 			int Posy= BackupTail->GetPosY();
 
 			sprintf(query, 
-"update BR_Characters set PosX= %d, Posy= %d where CharName= '%s'", 
+"update BR_Characters set PosX= %d, PosY= %d where CharName= '%s'", 
 Posx, Posy, BackupTail->GetClntId());
 //			printf("Backup PocSend Query %s", query);
 

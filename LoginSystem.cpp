@@ -139,6 +139,10 @@ void Login(char* message, SOCKET* hClntSock){
 	printf("query is %s\n", query);
 	Dummy.SendQuery(query, &res, &fields);
 
+	if(res== NULL){
+		printf("error from Login()\n");
+		return;
+	}
 	int rows= mysql_num_rows(res);
 
 	printf("%d, %d\n", res, rows);

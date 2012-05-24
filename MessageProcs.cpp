@@ -96,7 +96,8 @@ void PropagateProc(char* message, Player* threadPlayer){
 	Player* PlayerTail= PlayerHead;
 	printf("send except itself\n");
 	while(PlayerTail!= NULL){
-		if(strcmp(PlayerTail->GetClntId(), threadPlayer->GetClntId())!= 0)		{
+		if(strcmp(PlayerTail->GetClntId(), threadPlayer->GetClntId())!= 0){
+			printf("PRGT SO SEND FROM %s TO %s",threadPlayer->GetClntId(), PlayerTail->GetClntId());
 			PlayerTail->SendClntMessage(Tempmessage);
 		}
 		PlayerTail= PlayerTail->GetNextNode();
@@ -274,10 +275,12 @@ threadPlayer->GetClntId());
 
 	if(res== NULL){
 		printf("erorr in 2 res is NULL\n");
+		return;
 	}
 	MYSQL_ROW row;
 
 	printf("call mysql_fetch_row()\n");
+
 	row= mysql_fetch_row(res);
 
 	printf("mysql_fetch_row() end\n");
@@ -323,6 +326,7 @@ void StartPlayProc(char* message, Player* threadPlayer){
 
 	if(res== NULL){
 		printf("error in 3 res is NULL\n");
+		return;
 	}
 	while(row= mysql_fetch_row(res)){
 		char tempMessage[100];
@@ -438,10 +442,12 @@ void AddHpProc(char* message, Player* threadPlayer){
 	printf("%s\n", victim);
 	sprintf(query, "select * from BR_Characters where CharName= '%s'", 
 victim);
+	printf("Send query %s\n", query);
 
 	threadPlayer->SendQuery(query, &res, &fields);
 	if(res == NULL){
 		printf("error in 5 res is NULL\n");
+		return;
 	}
 	MYSQL_ROW row;
 	printf("berfore fetch\n");
