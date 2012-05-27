@@ -11,6 +11,8 @@ private:
 	int Posy;
 	char arena[30];
 
+	pthread_t myThread;
+
 	void Disconnect();
 
 public:
@@ -35,4 +37,8 @@ public:
 	void SetPos(int PosX, int PosY);
 	int PlayerMessageProc(char* message);
 	int SendQuery(char* query, MYSQL_RES** res, int* fields);
+
+	void SetMyThread();
+	int AttachMyThread();
+	int DetechMyThread();
 };

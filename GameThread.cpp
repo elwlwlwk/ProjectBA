@@ -7,6 +7,11 @@ int thread_index= 0;
 void* ThreadProc(void* PlayerHead);
 
 void MakeNewThread(Player** Playerlist, SOCKET newSocket, char* id){
+
+	pthread_attr_t DetachedAttr;
+	pthread_attr_init(&DetachedAttr);
+	pthread_attr_setdetachstate(&DetachedAttr, PTHREAD_CREATE_DETACHED);
+
 	printf("Called MakeNewThred()\n");
 	Player* tempPlayer= *Playerlist;
 	if((*Playerlist)== NULL){
@@ -21,8 +26,8 @@ void MakeNewThread(Player** Playerlist, SOCKET newSocket, char* id){
 
 	if(thread_index<32){
 		printf("Make New Thread\n");
-		pthread_create( &(hThread[thread_index]), NULL, (*ThreadProc),
- Playerlist);
+		pthread_create( &(hThread[thread_index]), &DetachedAttr,
+ (*ThreadProc), Playerlist);
 	}
 }
 
@@ -50,6 +55,7 @@ void* ThreadProc(void* PlayerHead2){
 		threadPlayer= temp;
 		printf("threadPlayer is %s\n", threadPlayer->GetClntId());
 
+		threadPlayer->SetMyThread();
 		//int MinResult= MinGyuProc(threadPlayer);
 
 		char Tempmessage[100]="NEWP ";

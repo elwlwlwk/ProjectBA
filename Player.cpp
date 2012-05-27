@@ -194,3 +194,7 @@ int Player::SendQuery(char* query, MYSQL_RES** res, int* fields){
 	*fields= mysql_field_count(&mysql);
 	return 0;
 }
+
+void Player:: SetMyThread(){
+	myThread= pthread_self();
+}
