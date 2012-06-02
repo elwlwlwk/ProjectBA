@@ -37,9 +37,8 @@ void NewMember(char* message, SOCKET* hClntSock){
 	printf("NewMemberCalled\n");
 	memset(id, 0, sizeof(id));
 	memset(password, 0, sizeof(password));
-	printf("memset over");
+	printf("memset over\n");
 
-	int c[10];
 	for(int i=0; i<100; i++){
 		if(message[i]== 0)
 			break;
@@ -47,7 +46,7 @@ void NewMember(char* message, SOCKET* hClntSock){
 			index++;
 			i++;
 		}
-		if(index==1){
+		if(index== 1){
 			id[id_index++]= message[i];
 		}
 		if(index== 2){
@@ -55,13 +54,15 @@ void NewMember(char* message, SOCKET* hClntSock){
 		}
 	}
 
-	sprintf(query, "select * from br_account where ID= '%s'", id);
+	sprintf(query, "select * from BR_Account where ID= '%s'", id);
 
 	MYSQL_RES *res;
 	int fields;
+	int numrows;
 
 	Dummy.SendQuery(query, &res, &fields);
-	if(res!= NULL){
+	numrows= mysql_num_rows(res);
+	if(numrows!= 0){
 		send(*hClntSock, "overlaped id", 13, 0);
 		mysql_free_result(res);
 		return;
@@ -70,7 +71,7 @@ void NewMember(char* message, SOCKET* hClntSock){
 	memset(query, 0, sizeof(query));
 
 	sprintf(query, 
-"insert into br_account values('%s', '%s', 'NULL', 'NULL');", 
+"insert into BR_Account values('%s', '%s', 'NULL', 'NULL');", 
 id, password);
 
 	printf("Send Query: %s\n", query);
@@ -80,7 +81,7 @@ id, password);
 	memset(query, 0, sizeof(query));
 
 	sprintf(query, 
-"insery into br_characters values(%d, %d, '%s', %d, %d, %d, %d, '%s', %d, %d, %d, %d, %d, %d, %d", 
+"insert into BR_Characters values(%d, %d, '%s', %d, %d, %d, %d, '%s', %d, %d, %d, %d, %d, %d, %d", 
 0, 0, id, 1000, 1000, 1000, 1000, "cabin", -170, 18, 0, 0, 0, 0, 0);
 
 	printf("Send Query: %s\n", query);
