@@ -142,6 +142,23 @@ void Login(char* message, SOCKET* hClntSock){
 
 	if(res== NULL){
 		printf("error from Login()\n");
+		extern MYSQL mysql;
+printf("call mysql_init()\n");
+
+	mysql_init(&mysql);
+
+	printf("call mysql_read_connect()\n");
+
+	char sqlpass[30]="trinitrotoluene";
+	/*memset(sqlpass, 0, sizeof(sqlpass));
+	printf("enter sql pass: ");
+	scanf("%s", sqlpass);*/
+
+	if(!mysql_real_connect(&mysql, "localhost", "creeper", sqlpass, 
+"br", 0, (char*)NULL, CLIENT_MULTI_STATEMENTS)){
+		printf("%s\n", mysql_error(&mysql));
+		exit(1);
+	}
 		return;
 	}
 	int rows= mysql_num_rows(res);

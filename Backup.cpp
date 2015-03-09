@@ -75,7 +75,7 @@ void* BackupProc(void* trash){
 			sprintf(query, 
 "update BR_Characters set PosX= %d, PosY= %d where CharName= '%s'", 
 Posx, Posy, BackupTail->GetClntId());
-//			printf("Backup PocSend Query %s", query);
+			printf("Backup PocSend Query %s", query);
 
 			MYSQL_RES* res;
 			int fields;

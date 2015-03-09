@@ -20,10 +20,11 @@ int main(int argc, char** argv){
 	struct sockaddr_in clnt_addr;
 	int clnt_addr_size;
 	char init[]= "<?xml version=\"1.0\"?><!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\"><cross-domain-policy><site-control permitted-cross-domain-policies=\"master-only\"/><allow-access-from domain=\"clug.kr\" to-ports=\"9997,9998,9999\" /></cross-domain-policy>";
+	bool bValid= 1;
 
 
 	serv_sock= socket(PF_INET, SOCK_STREAM, 0);
-	if(serv_sock== -1){
+		if(serv_sock== -1){
 		printf("socket() error");
 		exit(1);
 	}
@@ -31,23 +32,26 @@ int main(int argc, char** argv){
 	memset(&serv_addr, 0, sizeof(serv_addr));
 	serv_addr.sin_family= AF_INET;
 	serv_addr.sin_addr.s_addr= htonl(INADDR_ANY);
-	serv_addr.sin_port= htons(atoi(argv[1]));
+	serv_addr.sin_port= htons(atoi("9999"));
+	
+	setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&bValid, sizeof(bValid));
 
 	if( bind(serv_sock, (struct sockaddr*) &serv_addr,
 	 sizeof(serv_addr))== -1){
 		printf("bind()error");
 		exit(1);
 	}
+
 	printf("call mysql_init()\n");
 
 	mysql_init(&mysql);
 
 	printf("call mysql_read_connect()\n");
 
-	char sqlpass[30];
-	memset(sqlpass, 0, sizeof(sqlpass));
+	char sqlpass[30]="trinitrotoluene";
+	/*memset(sqlpass, 0, sizeof(sqlpass));
 	printf("enter sql pass: ");
-	scanf("%s", sqlpass);
+	scanf("%s", sqlpass);*/
 
 	if(!mysql_real_connect(&mysql, "localhost", "creeper", sqlpass, 
 "br", 0, (char*)NULL, CLIENT_MULTI_STATEMENTS)){

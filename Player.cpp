@@ -45,7 +45,7 @@ Player::Player(SOCKET hClnt, char* name){
 
 	char query[100];
 	memset(query, 0, sizeof(0));
-	sprintf(query, "select * from BR_Characters where CharName= '%s'", 
+	sprintf(query, "select * from BR_Characters where CharName= \'%s\'", 
 name);
 
 	MYSQL_RES* res;
